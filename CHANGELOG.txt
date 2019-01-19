@@ -1,3 +1,7 @@
+v1.36-r2
+hacPack-GUI:
+Fixed a bug cause hacPack-GUI to display invalid titleid error while titleid is valid
+
 v1.36
 Fixed a bug cause titletype error when creating metadata nca with cnmt
 Changed Valid titleid range

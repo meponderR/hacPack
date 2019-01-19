@@ -56,9 +56,9 @@ namespace hacPack_GUI
             {
                 System.Windows.MessageBox.Show("Keyset path is empty", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
-            } else if (txt_titleid.Text == string.Empty || txt_titleid.Text.Length < 16 || txt_titleid.Text.Substring(0,2) != "0f")
+            } else if (txt_titleid.Text.Length < 16)
             {
-                System.Windows.MessageBox.Show("Invalid TitleID" + Environment.NewLine + "Valid TitleID Range: 0100000000000000 - 0fffffffffffffff", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Invalid TitleID" + Environment.NewLine + "Valid TitleID Range: 0100000000000000 - ffffffffffffffff", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
             return true;
