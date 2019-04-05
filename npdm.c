@@ -5,6 +5,7 @@
 #include <sys/time.h>
 #include "filepath.h"
 #include "npdm.h"
+#include "rsa.h"
 
 void npdm_process(hp_settings_t *settings)
 {
@@ -80,7 +81,7 @@ void npdm_process(hp_settings_t *settings)
         exit(EXIT_FAILURE);
     }
 
-    if ((settings->nozeroacidsig == 0) || (settings->nozeroacidkey == 0))
+    if (settings->nosignncasig2 == 0)
     {
         // Copy main.npdm to backup directory
         struct timeval ct;
@@ -92,22 +93,12 @@ void npdm_process(hp_settings_t *settings)
         filepath_append(&bkup_npdm_filepath, "%" PRIu64 "_main.npdm", ct.tv_sec);
         filepath_copy_file(&npdm_filepath, &bkup_npdm_filepath);
 
-        uint8_t zero_buff[0x100] = {0};
-
-        // Zero ACID sig
-        if (settings->nozeroacidsig == 0)
+        // Patch ACID public key
+        if (settings->nosignncasig2 == 0)
         {
-            printf("Zeroing ACID sig\n");
-            fseeko64(fl, npdm.acid_offset, SEEK_SET);
-            fwrite(zero_buff, 1, 0x100, fl);
-        }
-
-        // Zero ACID nca key
-        if (settings->nozeroacidkey == 0)
-        {
-            printf("Zeroing ACID key\n");
-            fseeko64(fl, npdm.acid_offset + 0x100, SEEK_SET);
-            fwrite(zero_buff, 1, 0x100, fl);
+            printf("Patching ACID public key\n");
+            fseeko(fl, npdm.acid_offset + 0x100, SEEK_SET);
+            fwrite(rsa_get_public_key(), 1, 0x100, fl);
         }
     }
 

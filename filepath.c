@@ -242,7 +242,6 @@ void filepath_copy_file(filepath_t *source_file, filepath_t *destination_path)
         exit(EXIT_FAILURE);
     }
 
-    // Get IVFC level file filesize
     fseeko64(source, 0, SEEK_END);
     file_size = ftello64(source);
     fseeko64(source, 0, SEEK_SET);

@@ -12,8 +12,7 @@
 #include "npdm.h"
 #include "pfs0.h"
 
-/* hacPack by The-4n
-   */
+/* hacPack by The-4n */
 
 // Print Usage
 static void usage(void)
@@ -42,8 +41,7 @@ static void usage(void)
             "--romfsdir               Set program romfs directory path\n"
             "--logodir                Set program logo directory path\n"
             "--titlekey               Set Titlekey for encrypting nca\n"
-            "--nozeronpdmsig          Leave npdm signature and doesn't 0 it\n"
-            "--nozeronpdmkey          Leave npdm nca key and doesn't 0 it\n"
+            "--nosignncasig2          Skip patching acid public key in npdm and signing nca header with acid public key\n"
             "Control NCA options:\n"
             "--romfsdir               Set control romfs directory path\n"
             "Manual NCA options:\n"
@@ -134,7 +132,7 @@ int main(int argc, char **argv)
                 {"htmldocnca", 1, NULL, 11},
                 {"metanca", 1, NULL, 12},
                 {"disttype", 1, NULL, 13},
-                //{"", 0, NULL, 14},
+                {"nosignncasig2", 0, NULL, 14},
                 {"plaintext", 0, NULL, 15},
                 {"keygeneration", 1, NULL, 16},
                 {"sdkversion", 1, NULL, 17},
@@ -148,8 +146,8 @@ int main(int argc, char **argv)
                 {"cnmt", 1, NULL, 25},
                 {"titlekey", 1, NULL, 26},
                 {"backupdir", 1, NULL, 27},
-                {"nozeroacidsig", 0, NULL, 28},
-                {"nozeroacidkey", 0, NULL, 29},
+                //{"", 0, NULL, 28},
+                //{"", 0, NULL, 29},
                 {"ncasig", 1, NULL, 30},
                 {NULL, 0, NULL, 0},
             };
@@ -252,8 +250,9 @@ int main(int argc, char **argv)
                 usage();
             }
             break;
-        //case 14:
-        //    break;
+        case 14:
+            settings.nosignncasig2 = 1;
+            break;
         case 15:
             settings.plaintext = 1;
             break;
@@ -308,12 +307,10 @@ int main(int argc, char **argv)
         case 27:
             filepath_set(&settings.backup_dir, optarg);
             break;
-        case 28:
-            settings.nozeroacidsig = 1;
+        /*case 28:
             break;
         case 29:
-            settings.nozeroacidkey = 1;
-            break;
+            break;*/
         case 30:
             if (!strcmp(optarg, "static"))
                 settings.nca_sig = NCA_SIG_TYPE_STATIC;
@@ -416,7 +413,10 @@ int main(int argc, char **argv)
 
     // Make sure that outout directory is set
     if (settings.out_dir.valid == VALIDITY_INVALID)
+    {
+        fprintf(stderr, "Error: Output directory is not specified");
         usage();
+    }
 
     // Remove existing temp directory and create new one + out
     printf("Removing existing temp directory\n");

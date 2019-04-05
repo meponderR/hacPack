@@ -13,7 +13,7 @@ all:
 .c.o:
 	$(CC) $(INCLUDE) -c $(CFLAGS) -o $@ $<
 
-hacpack: sha.o aes.o extkeys.o pki.o utils.o main.o filepath.o ConvertUTF.o nca.o romfs.o pfs0.o ivfc.o nacp.o npdm.o cnmt.o ticket.o
+hacpack: sha.o aes.o extkeys.o pki.o utils.o main.o filepath.o ConvertUTF.o nca.o romfs.o pfs0.o ivfc.o nacp.o npdm.o cnmt.o ticket.o rsa.o
 	$(CC) -o $@ $^ $(LDFLAGS) -L $(LIBDIR)
 
 aes.o: aes.h types.h
@@ -47,6 +47,8 @@ utils.o: utils.h types.h
 ticket.o: ticket.h ticket_files.h
 
 ConvertUTF.o: ConvertUTF.h
+
+rsa.o: rsa.h rsa_keys.h
 
 clean:
 	rm -f *.o hacpack hacpack.exe

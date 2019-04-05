@@ -106,8 +106,7 @@ typedef struct
     uint8_t digest[0x20];
     uint32_t title_version;
     uint8_t has_title_key;
-    uint8_t nozeroacidsig;
-    uint8_t nozeroacidkey;
+    uint8_t nosignncasig2;
     unsigned char title_key[0x10];
     unsigned char *keyareakey;
     int keygeneration;

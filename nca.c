@@ -9,6 +9,7 @@
 #include "romfs.h"
 #include "cnmt.h"
 #include "ticket.h"
+#include "rsa.h"
 
 void nca_create_romfs_type(hp_settings_t *settings, char *nca_type)
 {
@@ -426,6 +427,13 @@ void nca_create_program(hp_settings_t *settings)
         // Create cert and tik
         ticket_create_cert(settings);
         ticket_create_tik(settings);
+    }
+
+    // Sign header with acid public key
+    if (settings->nosignncasig2 == 0)
+    {
+        printf("Signing nca header\n");
+        rsa_sign(&nca_header.magic, 0x200, (unsigned char *)&nca_header.npdm_key_sig, 0x100);
     }
 
     // Fill NCA signature
