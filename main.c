@@ -21,7 +21,7 @@ static void usage(void)
             "Usage: %s [options...]\n\n"
             "Options:\n"
             "General options:\n"
-            "-o, --outputdir          Set output directory\n"
+            "-o, --outdir             Set output directory\n"
             "-k, --keyset             Set keyset filepath, default filepath is ." OS_PATH_SEPARATOR "keys.dat\n"
             "-h, --help               Display usage\n"
             "--type                   Set file type [nca, nsp]\n"
@@ -118,7 +118,7 @@ int main(int argc, char **argv)
             {
                 {"keyset", 1, NULL, 'k'},
                 {"help", 0, NULL, 'h'},
-                {"outputdir", 1, NULL, 'o'},
+                {"outdir", 1, NULL, 'o'},
                 {"type", 1, NULL, 1},
                 {"ncatype", 1, NULL, 2},
                 {"titletype", 1, NULL, 3},
