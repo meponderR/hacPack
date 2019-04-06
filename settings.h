@@ -57,8 +57,8 @@ enum hp_nca_type
 
 enum hp_file_type
 {
-    FILE_TYPE_NCA,
-    FILE_TYPE_NSP
+    FILE_TYPE_NCA = 1,
+    FILE_TYPE_NSP = 2
 };
 
 enum hp_title_type

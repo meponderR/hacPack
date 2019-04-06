@@ -527,27 +527,27 @@ int main(int argc, char **argv)
             }
             else if (settings.has_title_key)
             {
-                fprintf(stderr, "Titlekey is not supported for metadata nca\n");
+                fprintf(stderr, "Error: Titlekey is not supported for metadata nca\n");
                 usage();
             }
             else if ((settings.programnca.valid == VALIDITY_INVALID || settings.controlnca.valid == VALIDITY_INVALID) && settings.title_type == TITLE_TYPE_APPLICATION)
             {
-                fprintf(stderr, "--programnca and/or --controlnca is not set\n");
+                fprintf(stderr, "Error: --programnca and/or --controlnca is not set\n");
                 usage();
             }
             else if (settings.title_type == TITLE_TYPE_ADDON && settings.publicdatanca.valid == VALIDITY_INVALID)
             {
-                fprintf(stderr, "--publicdatanca is not set\n");
+                fprintf(stderr, "Error: --publicdatanca is not set\n");
                 usage();
             }
             else if (settings.title_type == TITLE_TYPE_SYSTEMPROGRAM && settings.programnca.valid == VALIDITY_INVALID)
             {
-                fprintf(stderr, "--programnca is not set\n");
+                fprintf(stderr, "Error: --programnca is not set\n");
                 usage();
             }
             else if (settings.title_type == TITLE_TYPE_SYSTEMDATA && settings.datanca.valid == VALIDITY_INVALID)
             {
-                fprintf(stderr, "--datanca is not set\n");
+                fprintf(stderr, "Error: --datanca is not set\n");
                 usage();
             }
             else
@@ -572,10 +572,16 @@ int main(int argc, char **argv)
             printf("\n----> Created NSP: %s\n", nsp_file_path.char_path);
         }
         else
+        {
+            fprintf(stderr, "Error: --ncadir is not set\n");
             usage();
+        }
     }
     else
-        usage();
+    {
+        fprintf(stderr, "Error: --type is not set\n");
+        usage();   
+    }
 
     // Remove temp directory
     printf("\n");
