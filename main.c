@@ -21,8 +21,14 @@ static void usage(void)
             "Usage: %s [options...]\n\n"
             "Options:\n"
             "General options:\n"
+            "-o, --outputdir          Set output directory\n"
             "-k, --keyset             Set keyset filepath, default filepath is ." OS_PATH_SEPARATOR "keys.dat\n"
             "-h, --help               Display usage\n"
+            "--type                   Set file type [nca, nsp]\n"
+            "--titleid                Set titleid\n"
+            "NCA required options:\n"
+            "--ncatype                Set nca type if file type is nca [program, control, manual, data, publicdata, meta]\n"
+            "NCA general options:\n"
             "--tempdir                Set temp directory filepath, default filepath is ." OS_PATH_SEPARATOR "hacbpack_temp" OS_PATH_SEPARATOR "\n"
             "--backupdir              Set backup directory filepath, default filepath is ." OS_PATH_SEPARATOR "hacbpack_backup" OS_PATH_SEPARATOR "\n"
             "--keygeneration          Set keygeneration for encrypting key area, default keygeneration is 1\n"
@@ -31,11 +37,6 @@ static void usage(void)
             "--keyareakey             Set key area key 2 in hex with 16 bytes length\n"
             "--ncasig                 Set nca signature type [zero, static, random]. Default is zero\n"
             "--disttype               Set nca distribution type [download, gamecard]. Default is download\n"
-            "Required options:\n"
-            "-o, --output             Set output directory\n"
-            "--type                   Set file type [nca, nsp]\n"
-            "--ncatype                Set nca type if file type is nca [program, control, manual, data, publicdata, meta]\n"
-            "--titleid                Set titleid\n"
             "Program NCA options:\n"
             "--exefsdir               Set program exefs directory path\n"
             "--romfsdir               Set program romfs directory path\n"
@@ -117,7 +118,7 @@ int main(int argc, char **argv)
             {
                 {"keyset", 1, NULL, 'k'},
                 {"help", 0, NULL, 'h'},
-                {"outdir", 1, NULL, 'o'},
+                {"outputdir", 1, NULL, 'o'},
                 {"type", 1, NULL, 1},
                 {"ncatype", 1, NULL, 2},
                 {"titletype", 1, NULL, 3},
@@ -455,20 +456,25 @@ int main(int argc, char **argv)
         usage();
     }
 
-    // Remove existing temp directory and create new one + out
-    printf("Removing existing temp directory\n");
-    filepath_remove_directory(&settings.temp_dir);
-    printf("Creating temp directory\n");
-    os_makedir(settings.temp_dir.os_path);
-    printf("Creating out directory\n");
-    os_makedir(settings.out_dir.os_path);
+    if (settings.file_type == FILE_TYPE_NCA)
+    {
+        // Remove existing temp directory and create a new one
+        printf("Removing existing temp directory\n");
+        filepath_remove_directory(&settings.temp_dir);
+        printf("Creating temp directory\n");
+        os_makedir(settings.temp_dir.os_path);
 
-    // Create backup directory
-    printf("Creating backup directory\n");
-    os_makedir(settings.backup_dir.os_path);
-    // Add titleid to backup folder path
-    filepath_append(&settings.backup_dir, "%016" PRIx64, settings.title_id);
-    os_makedir(settings.backup_dir.os_path);
+        // Create backup directory
+        printf("Creating backup directory\n");
+        os_makedir(settings.backup_dir.os_path);
+        // Add titleid to backup folder path
+        filepath_append(&settings.backup_dir, "%016" PRIx64, settings.title_id);
+        os_makedir(settings.backup_dir.os_path);
+    }
+    
+    // Create output directory
+    printf("Creating output directory\n");
+    os_makedir(settings.out_dir.os_path);
 
     printf("\n");
 
@@ -580,13 +586,16 @@ int main(int argc, char **argv)
     else
     {
         fprintf(stderr, "Error: --type is not set\n");
-        usage();   
+        usage();
     }
 
     // Remove temp directory
-    printf("\n");
-    printf("Removing created temp directory\n");
-    filepath_remove_directory(&settings.temp_dir);
+    if (settings.file_type == FILE_TYPE_NCA)
+    {
+        printf("\n");
+        printf("Removing created temp directory\n");
+        filepath_remove_directory(&settings.temp_dir);
+    }
 
     printf("\nDone.\n");
 

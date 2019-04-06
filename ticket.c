@@ -16,7 +16,7 @@ void ticket_create_cert(hp_settings_t *settings)
     FILE *file;
     if (!(file = os_fopen(cert_path.os_path, OS_MODE_WRITE)))
     {
-        fprintf(stderr, "unable to create cert\n");
+        fprintf(stderr, "Error: unable to create cert\n");
         exit(EXIT_FAILURE);
     }
     fwrite(ticket_files_cert, 1, TICKETCERTSIZE, file);
@@ -41,7 +41,7 @@ void ticket_create_tik(hp_settings_t *settings)
     FILE *file;
     if (!(file = os_fopen(tik_path.os_path, OS_MODE_WRITE)))
     {
-        fprintf(stderr, "unable to create tik\n");
+        fprintf(stderr, "Error: unable to create tik\n");
         exit(EXIT_FAILURE);
     }
     fwrite(ticket_files_tik, 1, TICKETTIKSIZE, file);
