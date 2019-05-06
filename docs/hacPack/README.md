@@ -134,6 +134,7 @@ Title type  "application" is for apps and games, "addon" is for dlcs, "systempro
 "addon" only contains publicdata nca  
 "systemprogram" only contains program nca  
 "systemdata" only contains data nca  
+You can set title version with --titleversion option  
 
 ```
 *nix: hacpack -o ./out/ --type nca --ncatype meta --titleid 0104444444444000 --programnca ./nca/00000000000000000000000000000001.nca

@@ -38,6 +38,7 @@ General options:
 --sdkversion             Set SDK version in hex, default SDK version is 000C1100  
 --keyareakey             Set key area key 2 in hex with 16 bytes length  
 --ncasig                 Set nca signature type [zero, static, random]. Default is zero  
+--disttype               Set nca distribution type [download, gamecard]. Default is download    
 Required options:  
 -o, --output             Set output directory  
 --type                   Set file type [nca, nsp]  
@@ -48,9 +49,7 @@ Program NCA options:
 --romfsdir               Set program romfs directory path  
 --logodir                Set program logo directory path  
 --titlekey               Set Titlekey for encrypting nca  
---nozeronpdmsig          Leave npdm signature and doesn't 0 it  
---nozeronpdmkey          Leave npdm nca key and doesn't 0 it  
---disttype               Set nca distribution type [download, gamecard]. Default is download  
+--nosignncasig2          Skip patching acid public key in npdm and signing nca header with acid public key  
 Control NCA options:  
 --romfsdir               Set control romfs directory path  
 Manual NCA options:  
