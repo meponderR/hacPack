@@ -433,7 +433,7 @@ void nca_create_program(hp_settings_t *settings)
     if (settings->nosignncasig2 == 0)
     {
         printf("Signing nca header\n");
-        rsa_sign(&nca_header.magic, 0x200, (unsigned char *)&nca_header.npdm_key_sig, 0x100);
+        rsa_sign(&nca_header.magic, 0x200, (unsigned char *)&nca_header.npdm_key_sig, 0x100, (char*)rsa_get_acid_private_key());
     }
 
     // Fill NCA signature

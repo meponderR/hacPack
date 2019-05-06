@@ -2,7 +2,7 @@
 #define HACPACK_RSA_KEYS_H
 
 // Self-generated private key
-const char rsa_private_key[] = "-----BEGIN RSA PRIVATE KEY-----\r\n"
+const char rsa_acid_private_key[] = "-----BEGIN RSA PRIVATE KEY-----\r\n"
 "MIIEowIBAAKCAQEAvVRzt+8mE7oE4RkmSh3ws4CGlBj7uhHkfwCpPFsn4TNVdLRo\r\n"
 "YYY17jQYWTtcOYPMcHxwUpgJyspGN8QGXEkJqY8jILv2eO0jBGtg7Br2afUBp6/x\r\n"
 "BOMT2RlYVX6H4a1UA19Hzmcn+T1hdDwS6oBYpi8rJSm0+q+yB34dueNkVsk4eKbj\r\n"
@@ -31,7 +31,7 @@ const char rsa_private_key[] = "-----BEGIN RSA PRIVATE KEY-----\r\n"
 "-----END RSA PRIVATE KEY-----\r\n";
 
 // Self-generated public key
-const unsigned char rsa_public_key[] = {
+const unsigned char rsa_acid_public_key[] = {
 0xbd, 0x54, 0x73, 0xb7, 0xef, 0x26, 0x13, 0xba, 0x04, 0xe1, 0x19, 0x26, 0x4a, 0x1d,
 0xf0, 0xb3, 0x80, 0x86, 0x94, 0x18, 0xfb, 0xba, 0x11, 0xe4, 0x7f, 0x00, 0xa9, 0x3c, 0x5b,
 0x27, 0xe1, 0x33, 0x55, 0x74, 0xb4, 0x68, 0x61, 0x86, 0x35, 0xee, 0x34, 0x18, 0x59, 0x3b,

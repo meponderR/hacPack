@@ -8,7 +8,7 @@
 #include "mbedtls/rsa.h"
 #include "mbedtls/x509.h"
 
-void rsa_sign(void* input, size_t input_size, unsigned char* output, size_t output_size)
+void rsa_sign(void* input, size_t input_size, unsigned char* output, size_t output_size, char* rsa_private_key)
 {
     unsigned char hash[32];
     unsigned char buf[MBEDTLS_MPI_MAX_SIZE];
@@ -38,7 +38,12 @@ void rsa_sign(void* input, size_t input_size, unsigned char* output, size_t outp
     mbedtls_entropy_free(&entropy);
 }
 
-const unsigned char *rsa_get_public_key()
+const unsigned char *rsa_get_acid_public_key()
 {
-    return rsa_public_key;
+    return rsa_acid_public_key;
+}
+
+const char *rsa_get_acid_private_key()
+{
+    return rsa_acid_private_key;
 }

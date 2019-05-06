@@ -98,7 +98,7 @@ void npdm_process(hp_settings_t *settings)
         {
             printf("Patching ACID public key\n");
             fseeko(fl, npdm.acid_offset + 0x100, SEEK_SET);
-            fwrite(rsa_get_public_key(), 1, 0x100, fl);
+            fwrite(rsa_get_acid_public_key(), 1, 0x100, fl);
         }
     }
 
