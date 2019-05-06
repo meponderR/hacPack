@@ -108,6 +108,8 @@ typedef struct
     filepath_t ncadir;
     filepath_t cnmt;
     filepath_t backup_dir;
+    filepath_t acid_private_key;
+    filepath_t nca_private_key;
     uint8_t plaintext;
     uint8_t digest[0x20];
     uint32_t title_version;

@@ -148,8 +148,17 @@ void nca_create_romfs_type(hp_settings_t *settings, char *nca_type)
     }
 
     // Fill NCA signature
-    printf("Generating signature\n");
-    nca_generate_sig(nca_header.fixed_key_sig, settings);
+    if (settings->nca_private_key.valid == VALIDITY_INVALID)
+    {
+        printf("Generating signature\n");
+        nca_generate_sig(nca_header.fixed_key_sig, settings);
+    }
+    else
+    {
+        // Sign header with specified private key
+        printf("Signing NCA header\n");
+        rsa_sign_with_file(&nca_header.magic, 0x200, nca_header.fixed_key_sig, 0x100, settings->nca_private_key.char_path);
+    }
 
     // Encrypt header
     printf("Encrypting header\n");
@@ -429,16 +438,25 @@ void nca_create_program(hp_settings_t *settings)
         ticket_create_tik(settings);
     }
 
-    // Sign header with acid public key
-    if (settings->nosignncasig2 == 0)
+    // Fill NCA signature
+    if (settings->nca_private_key.valid == VALIDITY_INVALID)
     {
-        printf("Signing nca header\n");
-        rsa_sign(&nca_header.magic, 0x200, (unsigned char *)&nca_header.npdm_key_sig, 0x100, (char*)rsa_get_acid_private_key());
+        printf("Generating signature\n");
+        nca_generate_sig(nca_header.fixed_key_sig, settings);
+    }
+    else
+    {
+        // Sign header with specified private key
+        printf("Signing NCA header\n");
+        rsa_sign_with_file(&nca_header.magic, 0x200, nca_header.fixed_key_sig, 0x100, settings->nca_private_key.char_path);
     }
 
-    // Fill NCA signature
-    printf("Generating signature\n");
-    nca_generate_sig(nca_header.fixed_key_sig, settings);
+    // Sign header with acid public key (signature 2)
+    if (settings->nosignncasig2 == 0)
+    {
+        printf("Signing NCA header signature 2\n");
+        rsa_sign(&nca_header.magic, 0x200, (unsigned char *)&nca_header.npdm_key_sig, 0x100, (char *)rsa_get_acid_private_key());
+    }
 
     printf("Encrypting header\n");
     nca_encrypt_header(&nca_header, settings);
@@ -628,8 +646,17 @@ void nca_create_meta(hp_settings_t *settings)
     nca_encrypt_key_area(&nca_header, settings);
 
     // Fill NCA signature
-    printf("Generating signature\n");
-    nca_generate_sig(nca_header.fixed_key_sig, settings);
+    if (settings->nca_private_key.valid == VALIDITY_INVALID)
+    {
+        printf("Generating signature\n");
+        nca_generate_sig(nca_header.fixed_key_sig, settings);
+    }
+    else
+    {
+        // Sign header with specified private key
+        printf("Signing NCA header\n");
+        rsa_sign_with_file(&nca_header.magic, 0x200, nca_header.fixed_key_sig, 0x100, settings->nca_private_key.char_path);
+    }
 
     // Encrypt header
     printf("Encrypting header\n");

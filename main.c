@@ -37,12 +37,14 @@ static void usage(void)
             "--keyareakey             Set key area key 2 in hex with 16 bytes length\n"
             "--ncasig                 Set nca signature type [zero, static, random]. Default is zero\n"
             "--disttype               Set nca distribution type [download, gamecard]. Default is download\n"
+            "--ncaprivatekey          Set private key filepath for signing nca with PEM format\n"
             "Program NCA options:\n"
             "--exefsdir               Set program exefs directory path\n"
             "--romfsdir               Set program romfs directory path\n"
             "--logodir                Set program logo directory path\n"
             "--titlekey               Set Titlekey for encrypting nca\n"
             "--nosignncasig2          Skip patching acid public key in npdm and signing nca header with acid public key\n"
+            "--acidprivatekey         Set private key filepath for signing acid with PEM format\n"
             "Control NCA options:\n"
             "--romfsdir               Set control romfs directory path\n"
             "Manual NCA options:\n"
@@ -89,6 +91,8 @@ int main(int argc, char **argv)
     filepath_init(&settings.metanca);
     filepath_init(&settings.ncadir);
     filepath_init(&settings.cnmt);
+    filepath_init(&settings.acid_private_key);
+    filepath_init(&settings.nca_private_key);
 
     // Hardcode default temp directory
     filepath_init(&settings.temp_dir);
@@ -146,8 +150,8 @@ int main(int argc, char **argv)
                 {"cnmt", 1, NULL, 25},
                 {"titlekey", 1, NULL, 26},
                 {"backupdir", 1, NULL, 27},
-                //{"", 0, NULL, 28},
-                //{"", 0, NULL, 29},
+                {"ncaprivatekey", 1, NULL, 28},
+                {"acidprivatekey", 1, NULL, 29},
                 {"ncasig", 1, NULL, 30},
                 {NULL, 0, NULL, 0},
             };
@@ -307,10 +311,12 @@ int main(int argc, char **argv)
         case 27:
             filepath_set(&settings.backup_dir, optarg);
             break;
-        /*case 28:
+        case 28:
+            filepath_set(&settings.nca_private_key, optarg);
             break;
         case 29:
-            break;*/
+            filepath_set(&settings.acid_private_key, optarg);
+            break;
         case 30:
             if (!strcmp(optarg, "static"))
                 settings.nca_sig = NCA_SIG_TYPE_STATIC;

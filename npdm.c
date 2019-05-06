@@ -102,5 +102,21 @@ void npdm_process(hp_settings_t *settings)
         }
     }
 
+    if (settings->acid_private_key.valid == VALIDITY_VALID)
+    {
+        printf("Signing ACID\n");
+        fseeko(fl, npdm.acid_offset + 0x100, SEEK_SET);
+        unsigned char *acid_buff = (unsigned char *)malloc(acid.size);
+        if (fread(acid_buff, 1, acid.size, fl) != acid.size)
+        {
+            fprintf(stderr, "Failed to read NPDM!\n");
+            exit(EXIT_FAILURE);
+        }
+        rsa_sign_with_file(acid_buff, acid.size, acid.signature, 0x100, settings->acid_private_key.char_path);
+        fseeko(fl, npdm.acid_offset, SEEK_SET);
+        fwrite(acid.signature, 1, 0x100, fl);
+        free(acid_buff);
+    }
+
     fclose(fl);
 }
