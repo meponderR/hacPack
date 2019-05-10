@@ -45,7 +45,7 @@ typedef struct {
     std::uint8_t Hdcp;
     std::uint64_t SeedForPseudoDeviceId ;
     char BcatPassphrase[0x41];
-    std::uint8_t _0x3141;
+    std::uint8_t StartupUserAccountOptionFlag;
     std::uint8_t ReservedForUserAccountSaveDataOperation[0x6];
     std::uint64_t UserAccountSaveDataSizeMax;
     std::uint64_t UserAccountSaveDataJournalSizeMax;
@@ -55,12 +55,14 @@ typedef struct {
     std::uint64_t CacheStorageSize;
     std::uint64_t CacheStorageJournalSize;
     std::uint64_t CacheStorageDataAndJournalSizeMax;
-    std::uint64_t CacheStorageIndexMax;
+    std::uint16_t CacheStorageIndexMax;
+    std::uint8_t reserved_0x318a[0x6];
     std::uint64_t PlayLogQueryableApplicationId[0x10];
     std::uint8_t PlayLogQueryCapability;
     std::uint8_t RepairFlag;
     std::uint8_t ProgramIndex;
     std::uint8_t RequiredNetworkServiceLicenseOnLaunchFlag;
+    std::uint8_t reserved_0x3214[0x4];
     std::uint8_t Reserved[0xDEC];
 } nacp_t;
 #pragma pack(pop)
@@ -92,6 +94,7 @@ class nacp_tool {
     const char* get_addoncontent_registration_type(uint8_t value);
     const char *get_useraccount_switch_lock(uint8_t value);
     const char *get_required_network_service_license_on_launch(uint8_t value);
+    const char *get_startup_user_account_option_flag(uint8_t value);
     // Create
     int get_title_lang_id(const char *lang_name);
     uint8_t set_startup_user_account(const char *value);
@@ -112,6 +115,7 @@ class nacp_tool {
     uint32_t set_attribute_flag(const char *value);
     uint8_t set_useraccount_switch_lock(const char *value);
     uint8_t set_required_network_service_license_on_launch(const char *value);
+    uint8_t set_startup_user_account_option_flag(const char *value);
 };
 
 #endif

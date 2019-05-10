@@ -116,6 +116,7 @@ void nacp_tool::print(const string *input_filepath)
     cout << "Logo Type: " << nacp_tool::get_logo_type(nacp.LogoType) << "\n";
     cout << "Logo Handling: " << nacp_tool::get_logo_handling(nacp.LogoHandling) << "\n";
     cout << "Startup User Account: " << nacp_tool::get_startup_user_account(nacp.StartupUserAccount) << "\n";
+    cout << "Startup User Account Option Flag: " << nacp_tool::get_startup_user_account_option_flag(nacp.StartupUserAccountOptionFlag) << "\n";
     cout << "UserAccount Switch Lock: " << nacp_tool::get_useraccount_switch_lock(nacp.UserAccountSwitchLock) << "\n";
     cout << "Required Network Service License On Launch: " << nacp_tool::get_required_network_service_license_on_launch(nacp.RequiredNetworkServiceLicenseOnLaunchFlag) << "\n";
     cout << "Screenshot: " << nacp_tool::get_screenshot(nacp.Screenshot) << "\n";
@@ -294,6 +295,9 @@ void nacp_tool::createxml(const string *input_filepath, const string *output_fil
     if (nacp.BcatPassphrase[0] != '\0')
         xml_eBcatPassphrase->SetText(nacp.BcatPassphrase);
     xml_nApplication->InsertEndChild(xml_eBcatPassphrase);
+    XMLElement *xml_eStartupUserAccountOption = nacp_xml.NewElement("StartupUserAccountOption");
+    xml_eStartupUserAccountOption->SetText(nacp_tool::get_startup_user_account_option_flag(nacp.StartupUserAccountOptionFlag));
+    xml_nApplication->InsertEndChild(xml_eStartupUserAccountOption);
     XMLElement *xml_eAddOnContentRegistrationType = nacp_xml.NewElement("AddOnContentRegistrationType");
     xml_eAddOnContentRegistrationType->SetText(nacp_tool::get_addoncontent_registration_type(nacp.AddOnContentRegistrationType));
     xml_nApplication->InsertEndChild(xml_eAddOnContentRegistrationType);
@@ -468,6 +472,16 @@ void nacp_tool::createnacp(const string *input_filepath, const string *output_fi
                     cerr << "Value of <Isbn> element is longer than 37 characters\n";
                     exit(EXIT_FAILURE);
                 }
+            }
+        }
+        else if (strElement == "StartupUserAccountOption")
+        {
+            if (eElement->GetText() != NULL)
+                nacp.StartupUserAccountOptionFlag = nacp_tool::set_startup_user_account_option_flag(eElement->GetText());
+            else
+            {
+                cerr << "Value of <StartupUserAccountOption> element is empty\n";
+                exit(EXIT_FAILURE);
             }
         }
         else if (strElement == "StartupUserAccount")
@@ -977,7 +991,7 @@ void nacp_tool::createnacp(const string *input_filepath, const string *output_fi
         {
             if (eElement->GetText() != NULL)
             {
-                nacp.CacheStorageIndexMax = strtoull(eElement->GetText(), NULL, 16);
+                nacp.CacheStorageIndexMax = strtoul(eElement->GetText(), NULL, 16);
                 if (errno == ERANGE)
                 {
                     cerr << "Value of <CacheStorageIndexMax> element is invalid\n";
@@ -1144,8 +1158,8 @@ const char *nacp_tool::get_title_lang_name(int lang_id)
                                               {10, "Portuguese"},
                                               {11, "Russian"},
                                               {12, "Korean"},
-                                              {13, "Taiwanese"},
-                                              {14, "Unknown_1"},
+                                              {13, "TraditionalChinese"},
+                                              {14, "SimplifiedChinese"},
                                               {15, "Unknown_2"}};
     if (title_lang_name.count(lang_id) == 1)
         return title_lang_name[lang_id];
@@ -1168,8 +1182,8 @@ int nacp_tool::get_title_lang_id(const char *lang_name)
                                                              {"Portuguese", 10},
                                                              {"Russian", 11},
                                                              {"Korean", 12},
-                                                             {"Taiwanese", 13},
-                                                             {"Unknown_1", 14},
+                                                             {"TraditionalChinese", 13},
+                                                             {"SimplifiedChinese", 14},
                                                              {"Unknown_2", 15}};
     if (title_lang_id.count(lang_name) == 1)
         return title_lang_id[lang_name];
@@ -1620,6 +1634,29 @@ uint8_t nacp_tool::set_required_network_service_license_on_launch(const char *va
     else
     {
         cerr << "Value of <RequiredNetworkServiceLicenseOnLaunch> element is invalid\n";
+        exit(EXIT_FAILURE);
+    }
+}
+
+const char *nacp_tool::get_startup_user_account_option_flag(uint8_t value)
+{
+    map<uint8_t, const char *> startup_user_account_option_flag = {{0, "None"},
+                                                                   {1, "IsOptional"}};
+    if (startup_user_account_option_flag.count(value) == 1)
+        return startup_user_account_option_flag[value];
+    else
+        return "Unknown";
+}
+
+uint8_t nacp_tool::set_startup_user_account_option_flag(const char *value)
+{
+    map<const char *, uint8_t, CompareCStrings> startup_user_account_option_flag = {{"None", 0},
+                                                                                    {"IsOptional", 1}};
+    if (startup_user_account_option_flag.count(value) == 1)
+        return startup_user_account_option_flag[value];
+    else
+    {
+        cerr << "Value of <StartupUserAccountOption> element is invalid\n";
         exit(EXIT_FAILURE);
     }
 }
