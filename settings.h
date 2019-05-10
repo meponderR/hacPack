@@ -108,13 +108,15 @@ typedef struct
     filepath_t ncadir;
     filepath_t cnmt;
     filepath_t backup_dir;
-    filepath_t acid_private_key;
-    filepath_t nca_private_key;
+    filepath_t acid_sig_private_key;
+    filepath_t nca_sig1_private_key;
+    filepath_t nca_sig2_private_key;
+    filepath_t nca_sig2_modulus;
     uint8_t plaintext;
     uint8_t digest[0x20];
     uint32_t title_version;
     uint8_t has_title_key;
-    uint8_t nosignncasig2;
+    uint8_t noselfsignncasig2;
     unsigned char title_key[0x10];
     unsigned char *keyareakey;
     int keygeneration;

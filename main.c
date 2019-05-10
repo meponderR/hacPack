@@ -37,14 +37,16 @@ static void usage(void)
             "--keyareakey             Set key area key 2 in hex with 16 bytes length\n"
             "--ncasig                 Set nca signature type [zero, static, random]. Default is zero\n"
             "--disttype               Set nca distribution type [download, gamecard]. Default is download\n"
-            "--ncaprivatekey          Set private key filepath for signing nca with PEM format\n"
+            "--ncasig1privatekey      Set private key filepath for signing nca signature 1 with PEM format\n"
             "Program NCA options:\n"
             "--exefsdir               Set program exefs directory path\n"
             "--romfsdir               Set program romfs directory path\n"
             "--logodir                Set program logo directory path\n"
             "--titlekey               Set Titlekey for encrypting nca\n"
-            "--nosignncasig2          Skip patching acid public key in npdm and signing nca header with acid public key\n"
             "--acidprivatekey         Set private key filepath for signing acid with PEM format\n"
+            "--ncasig2privatekey      Set private key filepath for signing nca signature 2 with PEM format\n"
+            "--ncasig2modulus         Set modulus filepath for signing nca signature 2\n"
+            "--nosignncasig2          Skip patching acid public key in npdm and signing nca header with self-signed keys\n"
             "Control NCA options:\n"
             "--romfsdir               Set control romfs directory path\n"
             "Manual NCA options:\n"
@@ -91,8 +93,10 @@ int main(int argc, char **argv)
     filepath_init(&settings.metanca);
     filepath_init(&settings.ncadir);
     filepath_init(&settings.cnmt);
-    filepath_init(&settings.acid_private_key);
-    filepath_init(&settings.nca_private_key);
+    filepath_init(&settings.acid_sig_private_key);
+    filepath_init(&settings.nca_sig1_private_key);
+    filepath_init(&settings.nca_sig2_private_key);
+    filepath_init(&settings.nca_sig2_modulus);
 
     // Hardcode default temp directory
     filepath_init(&settings.temp_dir);
@@ -136,7 +140,7 @@ int main(int argc, char **argv)
                 {"htmldocnca", 1, NULL, 11},
                 {"metanca", 1, NULL, 12},
                 {"disttype", 1, NULL, 13},
-                {"nosignncasig2", 0, NULL, 14},
+                {"noselfsignncasig2", 0, NULL, 14},
                 {"plaintext", 0, NULL, 15},
                 {"keygeneration", 1, NULL, 16},
                 {"sdkversion", 1, NULL, 17},
@@ -150,9 +154,11 @@ int main(int argc, char **argv)
                 {"cnmt", 1, NULL, 25},
                 {"titlekey", 1, NULL, 26},
                 {"backupdir", 1, NULL, 27},
-                {"ncaprivatekey", 1, NULL, 28},
-                {"acidprivatekey", 1, NULL, 29},
+                {"ncasig1privatekey", 1, NULL, 28},
+                {"acidsigprivatekey", 1, NULL, 29},
                 {"ncasig", 1, NULL, 30},
+                {"ncasig2privatekey", 1, NULL, 31},
+                {"ncasig2modulus", 1, NULL, 32},
                 {NULL, 0, NULL, 0},
             };
 
@@ -255,7 +261,7 @@ int main(int argc, char **argv)
             }
             break;
         case 14:
-            settings.nosignncasig2 = 1;
+            settings.noselfsignncasig2 = 1;
             break;
         case 15:
             settings.plaintext = 1;
@@ -312,10 +318,10 @@ int main(int argc, char **argv)
             filepath_set(&settings.backup_dir, optarg);
             break;
         case 28:
-            filepath_set(&settings.nca_private_key, optarg);
+            filepath_set(&settings.nca_sig1_private_key, optarg);
             break;
         case 29:
-            filepath_set(&settings.acid_private_key, optarg);
+            filepath_set(&settings.acid_sig_private_key, optarg);
             break;
         case 30:
             if (!strcmp(optarg, "static"))
@@ -329,6 +335,12 @@ int main(int argc, char **argv)
                 fprintf(stderr, "Error: Invalid ncasig: %s\n", optarg);
                 usage();
             }
+            break;
+        case 31:
+            filepath_set(&settings.nca_sig2_private_key, optarg);
+            break;
+        case 32:
+            filepath_set(&settings.nca_sig2_modulus, optarg);
             break;
         default:
             usage();
@@ -477,7 +489,7 @@ int main(int argc, char **argv)
         filepath_append(&settings.backup_dir, "%016" PRIx64, settings.title_id);
         os_makedir(settings.backup_dir.os_path);
     }
-    
+
     // Create output directory
     printf("Creating output directory\n");
     os_makedir(settings.out_dir.os_path);
@@ -490,7 +502,15 @@ int main(int argc, char **argv)
         {
         case NCA_TYPE_PROGRAM:
             if (settings.exefs_dir.valid == VALIDITY_INVALID)
+            {
+                fprintf(stderr, "Error: exefs filepath is not set\n");
                 usage();
+            }
+            else if ((settings.nca_sig2_private_key.valid == VALIDITY_VALID) && (settings.nca_sig2_modulus.valid == VALIDITY_INVALID) || (settings.nca_sig2_private_key.valid == VALIDITY_INVALID) && (settings.nca_sig2_modulus.valid == VALIDITY_VALID))
+            {
+                fprintf(stderr, "Error: Both nca signature 2 private key and public key filepaths must be valid\n");
+                usage();
+            }
             printf("----> Processing NPDM\n");
             npdm_process(&settings);
             printf("\n");
@@ -501,7 +521,7 @@ int main(int argc, char **argv)
                 usage();
             else if (settings.has_title_key)
             {
-                fprintf(stderr, "Titlekey is not supported for control nca\n");
+                fprintf(stderr, "Error: Titlekey is not supported for control nca\n");
                 usage();
             }
             printf("----> Processing NACP\n");
@@ -514,7 +534,7 @@ int main(int argc, char **argv)
                 usage();
             else if (settings.has_title_key)
             {
-                fprintf(stderr, "Titlekey is not supported for data nca\n");
+                fprintf(stderr, "Error: Titlekey is not supported for data nca\n");
                 usage();
             }
             nca_create_romfs_type(&settings, nca_romfs_get_type(settings.nca_type));

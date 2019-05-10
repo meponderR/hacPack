@@ -81,7 +81,7 @@ void npdm_process(hp_settings_t *settings)
         exit(EXIT_FAILURE);
     }
 
-    if (settings->nosignncasig2 == 0)
+    if ((settings->noselfsignncasig2 == 0) || (settings->nca_sig2_modulus.valid == VALIDITY_VALID))
     {
         // Copy main.npdm to backup directory
         struct timeval ct;
@@ -94,15 +94,35 @@ void npdm_process(hp_settings_t *settings)
         filepath_copy_file(&npdm_filepath, &bkup_npdm_filepath);
 
         // Patch ACID public key
-        if (settings->nosignncasig2 == 0)
+        printf("Patching ACID public key\n");
+        fseeko(fl, npdm.acid_offset + 0x100, SEEK_SET);
+        if (settings->nca_sig2_modulus.valid == VALIDITY_VALID)
         {
-            printf("Patching ACID public key\n");
-            fseeko(fl, npdm.acid_offset + 0x100, SEEK_SET);
-            fwrite(rsa_get_acid_public_key(), 1, 0x100, fl);
+            uint8_t modulus[0x100];
+            memset(modulus, 0, 0x100);
+            FILE *flmodulus = os_fopen(settings->nca_sig2_modulus.os_path, OS_MODE_READ);
+
+            if (flmodulus == NULL)
+            {
+                fprintf(stderr, "Failed to open %s!\n", settings->nca_sig2_modulus.char_path);
+                exit(EXIT_FAILURE);
+            }
+
+            if (fread(modulus, 1, 0x100, flmodulus) != 0x100)
+            {
+                fprintf(stderr, "Failed to read nca signature 2 modulus from: %s\n", settings->nca_sig2_modulus.char_path);
+                exit(EXIT_FAILURE);
+            }
+
+            fclose(flmodulus);
+
+            fwrite(modulus, 1, 0x100, fl);
         }
+        else
+            fwrite(rsa_get_acid_public_key(), 1, 0x100, fl);
     }
 
-    if (settings->acid_private_key.valid == VALIDITY_VALID)
+    if (settings->acid_sig_private_key.valid == VALIDITY_VALID)
     {
         printf("Signing ACID\n");
         fseeko(fl, npdm.acid_offset + 0x100, SEEK_SET);
@@ -112,7 +132,7 @@ void npdm_process(hp_settings_t *settings)
             fprintf(stderr, "Failed to read NPDM!\n");
             exit(EXIT_FAILURE);
         }
-        rsa_sign_with_file(acid_buff, acid.size, acid.signature, 0x100, settings->acid_private_key.char_path);
+        rsa_sign_with_file(acid_buff, acid.size, acid.signature, 0x100, settings->acid_sig_private_key.char_path);
         fseeko(fl, npdm.acid_offset, SEEK_SET);
         fwrite(acid.signature, 1, 0x100, fl);
         free(acid_buff);
