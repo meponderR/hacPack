@@ -39,7 +39,7 @@ General options:
 --keyareakey             Set key area key 2 in hex with 16 bytes length  
 --ncasig                 Set nca signature type [zero, static, random]. Default is zero  
 --disttype               Set nca distribution type [download, gamecard]. Default is download  
---ncaprivatekey          Set private key filepath for signing nca with PEM format  
+--ncasig1privatekey      Set private key filepath for signing nca signature 1 with PEM format  
 Required options:  
 -o, --output             Set output directory  
 --type                   Set file type [nca, nsp]  
@@ -52,6 +52,9 @@ Program NCA options:
 --titlekey               Set Titlekey for encrypting nca  
 --nosignncasig2          Skip patching acid public key in npdm and signing nca header with acid public key  
 --acidprivatekey         Set private key filepath for signing acid with PEM format  
+--ncasig2privatekey      Set private key filepath for signing nca signature 2 with PEM format  
+--ncasig2modulus         Set modulus filepath for signing nca signature 2  
+--nosignncasig2          Skip patching acid public key in npdm and signing nca header with self-signed keys  
 Control NCA options:  
 --romfsdir               Set control romfs directory path  
 Manual NCA options:  
