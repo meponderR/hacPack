@@ -27,11 +27,17 @@ titlekek_xx | Title key encryption key
 *nix: ./hacpack [options...]  
 Windows: .\hacpack.exe [options...]  
   
-Options:
+Options:  
 General options:  
+-o, --outdir             Set output directory  
 -k, --keyset             Set keyset filepath, default filepath is ./keys.dat  
 -h, --help               Display usage  
---tempdir                Set temp directory filepath, default filepath is ./hacpack_temp/  
+--type                   Set file type [nca, nsp]  
+--titleid                Set titleid  
+NCA required options:  
+--ncatype                Set nca type if file type is nca [program, control, manual, data, publicdata, meta]  
+NCA general options:  
+--tempdir                Set temp directory filepath, default filepath is ./hacbpack_temp/  
 --backupdir              Set backup directory filepath, default filepath is ./hacbpack_backup/  
 --keygeneration          Set keygeneration for encrypting key area, default keygeneration is 1  
 --plaintext              Skip encrypting sections and set section header block crypto type to plaintext  
@@ -40,17 +46,11 @@ General options:
 --ncasig                 Set nca signature type [zero, static, random]. Default is zero  
 --disttype               Set nca distribution type [download, gamecard]. Default is download  
 --ncasig1privatekey      Set private key filepath for signing nca signature 1 with PEM format  
-Required options:  
--o, --output             Set output directory  
---type                   Set file type [nca, nsp]  
---ncatype                Set nca type if file type is nca [program, control, manual, data, publicdata, meta]  
---titleid                Set titleid  
 Program NCA options:  
 --exefsdir               Set program exefs directory path  
 --romfsdir               Set program romfs directory path  
 --logodir                Set program logo directory path  
 --titlekey               Set Titlekey for encrypting nca  
---nosignncasig2          Skip patching acid public key in npdm and signing nca header with acid public key  
 --acidprivatekey         Set private key filepath for signing acid with PEM format  
 --ncasig2privatekey      Set private key filepath for signing nca signature 2 with PEM format  
 --ncasig2modulus         Set modulus filepath for signing nca signature 2  
