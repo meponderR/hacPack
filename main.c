@@ -216,6 +216,8 @@ int main(int argc, char **argv)
                 settings.title_type = TITLE_TYPE_SYSTEMPROGRAM;
             else if (!strcmp(optarg, "systemdata"))
                 settings.title_type = TITLE_TYPE_SYSTEMDATA;
+            else if (!strcmp(optarg, "patch"))
+                settings.title_type = TITLE_TYPE_PATCH;
             else
             {
                 fprintf(stderr, "Error: invalid titletype: %s\n", optarg);
@@ -506,7 +508,7 @@ int main(int argc, char **argv)
                 fprintf(stderr, "Error: exefs filepath is not set\n");
                 usage();
             }
-            else if ((settings.nca_sig2_private_key.valid == VALIDITY_VALID) && (settings.nca_sig2_modulus.valid == VALIDITY_INVALID) || (settings.nca_sig2_private_key.valid == VALIDITY_INVALID) && (settings.nca_sig2_modulus.valid == VALIDITY_VALID))
+            else if (((settings.nca_sig2_private_key.valid == VALIDITY_VALID) && (settings.nca_sig2_modulus.valid == VALIDITY_INVALID)) || ((settings.nca_sig2_private_key.valid == VALIDITY_INVALID) && (settings.nca_sig2_modulus.valid == VALIDITY_VALID)))
             {
                 fprintf(stderr, "Error: Both nca signature 2 private key and public key filepaths must be valid\n");
                 usage();

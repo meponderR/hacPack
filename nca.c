@@ -572,6 +572,20 @@ void nca_create_meta(hp_settings_t *settings)
         else
             cnmt_create_systemdata(&cnmt_path, settings);
     }
+    else if (settings->title_type == TITLE_TYPE_PATCH)
+    {
+        filepath_append(&cnmt_path, "Patch_%016" PRIx64 ".cnmt", settings->title_id);
+        if (settings->cnmt.valid == VALIDITY_VALID)
+        {
+            printf("Copying %s to %s\n", settings->cnmt.char_path, cnmt_path.char_path);
+            filepath_copy_file(&settings->cnmt, &cnmt_path);
+        }
+        else
+        {
+            fprintf(stderr, "Creating Patch metadata without providing cnmt is not supported yet!\n");
+            exit(EXIT_FAILURE);
+        }
+    }
 
     //Build PFS0
     filepath_t meta_pfs0;
