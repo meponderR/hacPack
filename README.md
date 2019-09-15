@@ -51,7 +51,7 @@ Program NCA options:
 --romfsdir               Set program romfs directory path  
 --logodir                Set program logo directory path  
 --titlekey               Set Titlekey for encrypting nca  
---acidprivatekey         Set private key filepath for signing acid with PEM format  
+--acidsigprivatekey      Set private key filepath for signing acid with PEM format  
 --ncasig2privatekey      Set private key filepath for signing nca signature 2 with PEM format  
 --ncasig2modulus         Set modulus filepath for signing nca signature 2  
 --nosignncasig2          Skip patching acid public key in npdm and signing nca header with self-signed keys  
@@ -66,7 +66,7 @@ PublicData NCA options:
 --romfsdir               Set publicdata romfs directory path  
 --titlekey               Set Titlekey for encrypting nca  
 Metadata NCA options:  
---titletype              Set cnmt title type [application, addon, systemprogram, systemdata]  
+--titletype              Set cnmt title type [application, patch, addon, systemprogram, systemdata]  
 --titleversion           Set title-version in hex with 4 bytes length, default value is 0x0  
 --programnca             Set program nca path  
 --controlnca             Set control nca path  
