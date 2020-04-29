@@ -1,0 +1,34 @@
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Update repo.
+      run: |
+        git submodule update --init --recursive
+    - name: rename config.mk.template
+      run: mv config.mk.template config.mk
+    - name: Build hacPack
+      run: make -j
+    - name: Build hacPack-Tools
+      run: make -C hacPack-Tools/hacPackTools-NACP -j
+    #- name: make build folder
+    #  run: |
+    #    mkdir Out/
+    #    mkdir Out/hacPackTools-NACP/
+    #    mv hacpack* Out/
+    #    mv hacPack-Tools/hacPackTools-NACP/hptnacp* Out/hacPackTools-NACP/
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        # Artifact name
+        name: Hacpack
+        # Directory containing files to upload
+        path: ./
+      
