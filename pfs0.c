@@ -8,7 +8,7 @@
 
 #include "types.h"
 
-#define MAX_FS_ENTRIES 0x10 //If ever needed, this constant and the size of stringtable can be increased.
+#define MAX_FS_ENTRIES 0x20 //If ever needed, this constant and the size of stringtable can be increased.
 
 int pfs0_build(filepath_t *in_dirpath, filepath_t *out_pfs0_filepath, uint64_t *out_pfs0_size)
 {
